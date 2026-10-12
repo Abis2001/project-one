@@ -8,12 +8,11 @@ pipeline{
         }
         stage('docker build'){
             steps{
-                sh 'docker build -t abishek/project-one .'
-            }
+                sh 'docker build -t abishek/project-one:latest ./Project'            }
         }
         stage('docker container run'){
             steps{
-                sh 'docker run -d -p 80:80 --name=project-one abishek/project-one'
+                sh 'docker run -d -p 80:80 --name=project-one abishek/project-one:latest'
             }
         }
         stage('docker push'){
