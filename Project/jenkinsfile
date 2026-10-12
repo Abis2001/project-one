@@ -1,0 +1,33 @@
+pipeline{
+    agent any
+    stages{
+        stage('git clone'){
+            steps{
+                git branch: 'main', url: 'https://github.com/Abis2001/project-one.git'
+            }
+        }
+        stage('docker build'){
+            steps{
+                sh 'docker build -t abishek/project-one .'
+            }
+        }
+        stage('docker container run'){
+            steps{
+                sh 'docker run -d -p 80:80 --name=project-one abishek/project-one'
+            }
+        }
+        stage('docker push'){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    sh 'docker login -u $USER -p $PASS'
+                    sh 'docker push abishek/project-one'
+                }
+            }
+        }
+        stage('docker container stop'){
+            steps{
+                sh 'docker stop project-one'
+            }
+        }   
+    }
+}
